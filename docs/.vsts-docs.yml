@@ -1,0 +1,28 @@
+steps:
+- script: echo Build Blazor-Splitter Docs
+- task: DotNetCoreInstaller@0
+  displayName: Use .NET Core sdk 2.1.300
+  inputs:
+    version: 2.1.300
+
+- task: DeleteFiles@1
+  displayName: Delete files from 
+  inputs:
+    Contents: ghpages
+  enabled: true
+
+- task: chrismason.vsts-docfxtasks.docfx-extension-build-task.DocFxTask@0
+  displayName: Create DocFx Documentation
+  inputs:
+    solution: 'docs/docfx.json'
+  enabled: true
+
+- task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
+  displayName: Publishes to GitHub Pages
+  inputs:
+    docPath: '$(System.DefaultWorkingDirectory)\docs\_site\*'
+    githubusername: kevinknowscs
+    githubemail: '$(GitHubEmail)'
+    githubaccesstoken: $(GitHubAccessToken)
+    repositoryname: 'blazor-splitter'
+  enabled: true
